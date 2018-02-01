@@ -2,7 +2,7 @@
 import java.util.*;
 
 public class Sorts{
-    private long steps;
+    private int steps;
 
     /**
      *  Description of Constructor
@@ -10,7 +10,7 @@ public class Sorts{
      * @param  list  Description of Parameter
      */
     public Sorts(){
-        steps = 100;
+        steps = 1;
     }
 
     /**
@@ -19,21 +19,24 @@ public class Sorts{
      * @param  list  reference to an array of integers to be sorted
      */
     public void bubbleSort(ArrayList <Integer> list){
+        //replace these lines with your code
         System.out.println();
-        System.out.println("Bubble Sort:");
+        System.out.println("Bubble Sort");
         System.out.println();
-        int[] array = arrayExchange(list);
         
-        int n = array.length;
-        for (int i = 0; i < n-1; i++)
-            for (int j = 0; j < n-i-1; j++)
-                if (array[j] > array[j+1])
-                {
-                    int temp = array[j];
-                    array[j] = array[j+1];
-                    array[j+1] = temp;
+        for (int outer = 0; outer < list.size() - 1; outer++){
+            for (int inner = 0; inner < list.size()-outer-1; inner++){
+                if (list.get(inner) > list.get(inner + 1)){
+                    //swap list[inner] & list[inner+1]
+                    int temp = list.get(inner);
+                    list.set(inner, list.get(inner + 1));
+                    list.set(inner + 1, temp);
+                    steps += 4;
                 }
-        revamp(array, list);
+                steps += 3;
+            }
+        }
+        
     }
 
     /**
@@ -42,23 +45,27 @@ public class Sorts{
      * @param  list  reference to an array of integers to be sorted
      */
     public void selectionSort(ArrayList <Integer> list){
+        //replace these lines with your code
         System.out.println();
-        System.out.println("Selection Sort:");
+        System.out.println("Selection Sort");
         System.out.println();
-        int[] array = arrayExchange(list);
-        
-        int n = array.length;
-        for (int i = 0; i < n-1; i++)
-        {
-            int min_idx = i;
-            for (int j = i+1; j < n; j++)
-                if (array[j] < array[min_idx])
-                    min_idx = j;
-            int temp = array[min_idx];
-            array[min_idx] = array[i];
-            array[i] = temp;
+
+        int min, temp;
+
+        for (int outer = 0; outer < list.size() - 1; outer++){
+            min = outer;
+            for (int inner = outer + 1; inner < list.size(); inner++){
+                if (list.get(inner) < list.get(min)) {
+                    min = inner; // a new smallest item is found
+                }
+                steps += 3;
+            }
+            //swap list[outer] & list[min]
+            temp = list.get(outer);
+            list.set(outer, list.get(min));
+            list.set(min, temp);
+            steps += 4;
         }
-        revamp(array, list);
     }
 
     /**
@@ -67,31 +74,113 @@ public class Sorts{
      * @param  list  reference to an array of integers to be sorted
      */
     public void insertionSort(ArrayList <Integer> list){
+        //replace these lines with your code
         System.out.println();
-        System.out.println("Insertion Sort:");
+        System.out.println("Insertion Sort");
         System.out.println();
-        int[] array = arrayExchange(list);
-        
-        int n = array.length;
-        for (int i = 1; i < n; ++i)
-        {
-            int key = array[i];
-            int j = i-1;
-            while (j>=0 && array[j] > key)
-            {
-                array[j+1] = array[j];
-                j = j-1;
+
+        for (int outer = 1; outer < list.size(); outer++){
+            int position = outer;
+            int key = list.get(position);
+
+            // Shift larger values to the right
+            while (position > 0 && list.get(position - 1) > key){
+                list.set(position, list.get(position - 1));
+                position--;
+                steps += 3;
             }
-            array[j+1] = key;
+            list.set(position, key);
+            steps ++;
         }
-        revamp(array, list);
     }
 
+    public void mergeSort(ArrayList <Integer> list, int low, int high) {
+        // check if low is smaller than high, if not then the array is sorted
+        if( low < high) {
+            // Get the index of the element which is in the middle
+            int middle = low + (high - low) / 2;
+            //System.out.print ("low " + low + "middle " + middle + " high " + high);
+            // Sort the left side of the array
+            mergeSort(list, low, middle);
+            // Sort the right side of the array
+            mergeSort(list, middle + 1, high);
+            // Combine them both
+            merge(list, low, middle, high);
+        }
+    }
+
+    private void merge(ArrayList <Integer> list, int low, int middle, int high) {
+        ArrayList <Integer> helper = new ArrayList <Integer> ();
+
+        int i = low;
+        int j = middle + 1;
+        // Copy the smallest values from either the left or the right side
+        // to the helper
+        while (i <= middle || j <= high) {
+            if (i > middle) {
+                helper.add(list.get(j));
+                j++;
+                steps++;
+            }
+            else if (j > high){
+                helper.add(list.get(i));
+                i++;
+                steps++;
+            }
+            else if (list.get(i) <= list.get(j)) {
+                helper.add(list.get(i));
+                i++;
+                steps++;
+            } else {
+                helper.add(list.get(j));
+                j++;
+                steps++;
+            }
+        }
+        int m = low;
+        // Copy the merged part back into the original list from low to high index
+        for(int l = 0; l < helper.size(); l++) {
+            list.set(m, helper.get(l));
+            m++;
+            steps++;
+        }
+    }
+    
+    public int consecSearch(ArrayList <Integer> list, int target){
+        for(int i = 0; i < list.size(); i++){
+            if(list.get(i) == target){
+                return i;
+            }
+            steps++;
+        }
+        return -1;
+    }
+    
+    public int binarySearch(ArrayList <Integer> list , int target , int first , int last){
+        int middle = (first + last) / 2;
+        if(last < first){
+            return -1;
+        }
+        else{
+            if(list.get(middle) > target){
+                steps++;
+                return binarySearch(list , target , first , middle - 1);
+            }
+            else if(list.get(middle) < target){
+                steps++;
+                return binarySearch(list, target , middle + 1 , last);
+            }
+            else{
+                return middle;
+            }
+        }
+    }
+    
     /**
      *  Accessor method to return the current value of steps
      *
      */
-    public long getStepCount(){
+    public int getStepCount(){
         return steps;
     }
 
@@ -101,21 +190,7 @@ public class Sorts{
      *
      * @param  stepCount   value assigned to steps
      */
-    public void setStepCount(long stepCount){
+    public void setStepCount(int stepCount){
         steps = stepCount;
-    }
-
-    public int[] arrayExchange(ArrayList <Integer> list){
-        int[] array = new int[list.size()];
-        for(int i = 0; i < array.length; i++){
-            array[i] = list.get(i);
-        }
-        return array;
-    }
-    public void revamp(int[] array, ArrayList <Integer> list){
-        list.clear();
-        for(int i = 0; i < array.length; i++){
-            list.add(array[i]);
-        }
     }
 }

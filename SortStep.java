@@ -1,3 +1,4 @@
+
 import java.util.*;
 
 /**
@@ -38,16 +39,17 @@ public class SortStep{
       System.out.println("(2) Selection sort");
       System.out.println("(3) Insertion sort");
       System.out.println("(4) Recursive mergesort");
-      System.out.println("(5) Fill with Integers");
+      System.out.println("(5) Consecutive search");
+      System.out.println("(6) Binary search");
+      System.out.println("(7) Fill with Integers");
       System.out.println("(Q) Quit");
       System.out.println();
       System.out.print("Choice ---> ");
       choice = console.next() + " ";
-      if ('1' <= choice.charAt(0) && choice.charAt(0) <= '6'){
+      if ('1' <= choice.charAt(0) && choice.charAt(0) <= '7'){
         System.out.println();
 
         mySorts.setStepCount(0);
-
         switch (choice.charAt(0)){
             case '1':
               resetArray();
@@ -62,22 +64,47 @@ public class SortStep{
               mySorts.insertionSort(myArray);
               break;
             case '4':
+            case '5':
+            case '6':
               resetArray();
               int last = myArray.size() - 1;
-              //mySorts.mergeSort(myArray, 0, last);
+              mySorts.mergeSort(myArray, 0, last);
               break;
-            case '5':
-        	  listType = "Integer";
+            case '7':
+              listType = "Integer";
               break;              
         }
 
-        if ('1' <= choice.charAt(0) && choice.charAt(0) <= '4'){
-        	System.out.println();
-        	System.out.println("Array sorted to:");
-	        screenOutput();
-	        System.out.println();
-	        System.out.println("# steps = " + mySorts.getStepCount());
-	        System.out.println();
+        if ('1' <= choice.charAt(0) && choice.charAt(0) <= '6'){
+            System.out.println();
+            System.out.println("Array sorted to:");
+            screenOutput();
+            System.out.println();
+            System.out.println("# steps = " + mySorts.getStepCount());
+            System.out.println();
+        }
+        mySorts.setStepCount(0);
+        if('5' == choice.charAt(0)){
+            System.out.println();
+            System.out.println("Number to search for:");
+            System.out.println();
+            int target = console.nextInt();
+            System.out.println();
+            System.out.println("Found at index: " + mySorts.consecSearch(myArray , target));
+            System.out.println();
+            System.out.println("# steps = " + mySorts.getStepCount());
+            System.out.println();
+        }
+        if('6' == choice.charAt(0)){  
+            System.out.println();
+            System.out.println("Number to search for:");
+            System.out.println();
+            int target = console.nextInt();
+            System.out.println();
+            System.out.println("Found at index: " + mySorts.binarySearch(myArray , target , 0 , myArray.size() - 1));
+            System.out.println();
+            System.out.println("# steps = " + mySorts.getStepCount());
+            System.out.println();
         }
       }
     } while (choice.charAt(0) != 'Q' && choice.charAt(0) != 'q');
@@ -112,7 +139,7 @@ public class SortStep{
    */
   private void resetArray(){
     if (myArray == null || listType.equals("Integer")){
-    	fillArrayWithInts();
+        fillArrayWithInts();
     }
 
     System.out.println();
@@ -135,4 +162,3 @@ public class SortStep{
 
   
 }
-
